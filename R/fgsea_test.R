@@ -40,11 +40,12 @@ fgseaRes <- fgsea(
   maxSize = 500
 )
 
+cat("number of enriched pathways:", nrow(fgseaRes))
+
 # Output files for EnrichmentMap
 # Output enrichments in "generic" format with just pvalues
-
 write.table(fgseaRes[,c("pathway", "pathway", "pval")], 
-            file=paste(base.path, "fgsea_PC_enrichments_generic.txt", sep=""),
+            file=paste(here(), "/data/fgsea_PC_enrichments_generic_results.txt", sep=""),
             sep = "\t",
             row.names = FALSE,
             quote = FALSE)

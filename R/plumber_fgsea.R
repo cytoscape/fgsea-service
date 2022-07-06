@@ -29,5 +29,5 @@ function(req) {
   # Add full gene sets to results
   fgseaRes$genes <- pathways[match(fgseaRes$pathway, names(pathways))]
   
-  fgseaRes[1:5, c("pathway", "size", "pval", "ES", "NES", "leadingEdge", "genes")]
+  fgseaRes[1:100, c("pathway", "size", "pval", "ES", "NES", "leadingEdge", "genes")]
 }
