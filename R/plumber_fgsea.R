@@ -5,7 +5,7 @@ library(here)
 set.seed(42)
 
 #Load pathway database into memory.
-gmt.file = here("data", "Human_GOBP_AllPathways_no_GO_iea_February_01_2017_symbol.gmt")
+gmt.file = here("data", "Human_GOBP_AllPathways_no_GO_iea_June_01_2022_symbol.gmt")
 pathways <- gmtPathways(gmt.file)
 
 # curl --data-binary @brca_hd_tep_ranks_100.rnk -X POST "http://127.0.0.1:9404/fgsea" -H "Content-Type: text/tab-separated-values"
@@ -26,8 +26,12 @@ function(req) {
     maxSize = 500
   )
   
+  # This is no longer necessary, the EM and express services will have their own copies of the database.
   # Add full gene sets to results
-  fgseaRes$genes <- pathways[match(fgseaRes$pathway, names(pathways))]
+  #fgseaRes$genes <- pathways[match(fgseaRes$pathway, names(pathways))]
   
-  fgseaRes[1:100, c("pathway", "size", "pval", "ES", "NES", "leadingEdge", "genes")]
+  # to include the leadingEdge in the future
+  #fgseaRes[, c("pathway", "size", "pval", "ES", "NES", "leadingEdge")]
+  
+  fgseaRes[, c("pathway", "size", "pval", "ES", "NES")]
 }
