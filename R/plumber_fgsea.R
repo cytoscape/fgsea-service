@@ -33,5 +33,5 @@ function(req) {
   # to include the leadingEdge in the future
   #fgseaRes[, c("pathway", "size", "pval", "ES", "NES", "leadingEdge")]
   
-  fgseaRes[, c("pathway", "size", "pval", "ES", "NES")]
+  fgseaRes[, c("pathway", "size", "pval", "padj", "ES", "NES")]
 }
