@@ -2,8 +2,6 @@ library(plumber)
 library(fgsea)
 library(here)
 
-set.seed(42)
-
 #Load pathway database into memory.
 gmt.file = here("data", "Human_GOBP_AllPathways_no_GO_iea_June_01_2022_symbol.gmt")
 pathways <- gmtPathways(gmt.file)
@@ -15,6 +13,8 @@ pathways <- gmtPathways(gmt.file)
 #* @parser tsv
 #* @serializer json
 function(req) {
+  set.seed(42)
+  
   ranks <- req$body
   colnames(ranks) <- c("gene","rank")
   ranks <- setNames(ranks$rank, ranks$gene)
@@ -31,7 +31,7 @@ function(req) {
   #fgseaRes$genes <- pathways[match(fgseaRes$pathway, names(pathways))]
   
   # to include the leadingEdge in the future
-  #fgseaRes[, c("pathway", "size", "pval", "ES", "NES", "leadingEdge")]
+  #fgseaRes[, c("pathway", "size", "pval", "padj", "ES", "NES", "leadingEdge")]
   
   fgseaRes[, c("pathway", "size", "pval", "padj", "ES", "NES")]
 }
