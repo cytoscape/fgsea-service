@@ -1,0 +1,14 @@
+FROM bioconductor/bioconductor_docker
+
+RUN R -e "BiocManager::install('fgsea')"
+RUN R -e "install.packages('readr')"
+RUN R -e "install.packages('here')"
+RUN R -e "install.packages('plumber')"
+
+WORKDIR /app
+COPY ./R ./R
+COPY ./data ./data
+
+EXPOSE 8000
+
+CMD ["Rscript", "/app/R/plumber.R"]
