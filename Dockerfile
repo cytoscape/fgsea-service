@@ -2,6 +2,7 @@ FROM rstudio/plumber
 
 RUN R -e "install.packages('BiocManager')"
 RUN R -e "BiocManager::install('fgsea')"
+RUN R -e "BiocManager::install('edgeR')"
 RUN R -e "install.packages('readr')"
 RUN R -e "install.packages('here')"
 
