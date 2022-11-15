@@ -17,12 +17,13 @@
 library(fgsea)
 library(here)
 
+print(Sys.time())
 set.seed(42)
 
 # Load Pathway Commons Tutorial data
 
 gmt.file = here("data", "Human_GOBP_AllPathways_no_GO_iea_June_01_2022_symbol.gmt")
-rnk.file = here("data", "brca_hd_tep_ranks_100.rnk")
+rnk.file = here("data", "brca_hd_tep_ranks.rnk")
 
 ranks <- read.table(rnk.file, header=TRUE, colClasses = c("character", "numeric"))
 colnames(ranks) <- c("g","r")

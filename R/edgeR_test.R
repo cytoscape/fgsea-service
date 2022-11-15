@@ -7,7 +7,9 @@
 
 library("fgsea")
 library("edgeR")
-edgeRUsersGuide()
+#edgeRUsersGuide()
+
+Sys.time()
 
 working_dir <- file.path(getwd(), "data")
 
@@ -22,35 +24,24 @@ classDefinitions_RNASeq <- read.table(
   header = TRUE, sep = "\t", quote="\"", stringsAsFactors = FALSE)
 
 
+# create data structure to hold counts and subtype information for each sample.
+d <- DGEList(counts=RNASeq, group=classDefinitions_RNASeq$SUBTYPE)
+
 
 # Filter out genes with low read counts, as these are just noise
 
-# counts per million
-cpms <- cpm(RNASeq)
-# determine which rows to keep 
-# a gene mush have at least 50 measurements with more than 1 CPM in one of the classes to be included in the analysis
-keep <- rowSums(cpms > 1) >= 50
-# These are the read counts that pass the filtering
-counts <- RNASeq[keep,]
-
-
+keep <- filterByExpr(d)
+d <- d[keep, , keep.lib.sizes=FALSE]
 
 # Normalize Data
 
-# create data structure to hold counts and subtype information for each sample.
-d <- DGEList(counts=counts, group=classDefinitions_RNASeq$SUBTYPE)
+
+#d <- DGEList(counts=counts, group=classDefinitions_RNASeq$SUBTYPE)
 #Normalize the data
 d <- calcNormFactors(d)
 #calculate dispersion
 d <- estimateCommonDisp(d)
 d <- estimateTagwiseDisp(d)
-
-
-
-# Filter unannotated genes
-exclude <- grep("\\?|^LOC", rownames(d), value=T)
-d <- d[which(!rownames(d) %in% exclude),]
-
 
 
 #calculate differential expression statistics with a simple design
@@ -94,3 +85,5 @@ write.table(fgseaRes[,c("pathway", "pathway", "pval", "padj")],
             sep = "\t",
             row.names = FALSE,
             quote = FALSE)
+
+Sys.time()
