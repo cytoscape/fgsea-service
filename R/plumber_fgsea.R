@@ -54,7 +54,7 @@ function(req, classes) {
   RNASeq <- req$body
   
   # Drop the description column (if there is one) and convert to a matrix
-  RNASeq <- RNASeq[ , !(names(RNASeq) %in% c("Description", "description"))]
+  RNASeq <- RNASeq[ , !(tolower(names(RNASeq)) %in% c("description"))]
   RNASeq <- as_matrix(RNASeq)
   
   # Parse the 'classes' query parameter into a vector
