@@ -14,11 +14,17 @@ pathways <- gmtPathways(gmt.file)
 fgsea.minSize = 15
 fgsea.maxSize = 500
 
-
 as_matrix <- function(x) {
   y <- as.matrix.data.frame(x[,-1])
   rownames(y) <- x[[1]]
   y
+}
+
+
+#* @get /
+#* @serializer unboxedJSON
+function(req) {
+  list(ok=TRUE)
 }
 
 
@@ -45,7 +51,6 @@ function(req) {
 
 
 # curl --data-binary @FakeExpression.txt -X POST "http://127.0.0.1:3723/rnaseq?classes=A,A,A,B,B,B" -H "Content-Type: text/tab-separated-values"
-
 
 #* @post /v1/rnaseq
 #* @parser tsv
