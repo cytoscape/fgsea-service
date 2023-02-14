@@ -58,12 +58,23 @@ function(req) {
 function(req, classes) {
   RNASeq <- req$body
   
-  # Drop the description column (if there is one) and convert to a matrix
-  RNASeq <- RNASeq[ , !(tolower(names(RNASeq)) %in% c("description"))]
-  RNASeq <- as_matrix(RNASeq)
-  
   # Parse the 'classes' query parameter into a vector
   classes <- strsplit(classes, split=",",fixed=TRUE)[[1]]
+  
+  # Boolean vector indicating which columns to keep
+  columns.keep <- classes %in% c('A','B')
+  
+  # Drop description column
+  RNASeq <- RNASeq[ , !(tolower(names(RNASeq)) %in% c('description'))]
+  
+  # Drop columns that are to be ignored
+  classes <- classes[columns.keep]
+  RNASeq <- RNASeq[, c(TRUE, columns.keep)]
+  #print(classes)
+  #str(RNASeq)
+  
+  # Convert to matrix
+  RNASeq <- as_matrix(RNASeq)
   
   # Create data structure to hold counts and subtype information for each sample.
   d <- DGEList(counts=RNASeq, group=classes)
