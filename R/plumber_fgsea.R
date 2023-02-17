@@ -18,7 +18,7 @@ fgsea.maxSize = 500
 result.cols = c("pathway", "size", "pval", "padj", "ES", "NES")
 
 
-as_matrix <- function(x) {
+asMatrix <- function(x) {
   y <- as.matrix.data.frame(x[,-1])
   rownames(y) <- x[[1]]
   y
@@ -27,7 +27,7 @@ as_matrix <- function(x) {
 
 calculateRanks <- function(RNASeq, classes) {
   # Convert to matrix
-  RNASeq <- as_matrix(RNASeq)
+  RNASeq <- asMatrix(RNASeq)
   
   # Create data structure to hold counts and subtype information for each sample.
   d <- DGEList(counts=RNASeq, group=classes)
@@ -55,7 +55,9 @@ calculateRanks <- function(RNASeq, classes) {
   ranks <- data.frame(genenames, ranks)
   colnames(ranks) <- c("gene","rank")
   ranks <- setNames(ranks$rank, ranks$gene)
-  ranks
+  
+  # remove non-finite entriesstr
+  ranks[is.finite(ranks)]
 }
 
 
@@ -128,8 +130,6 @@ function(req, classes) {
   # Drop columns that are to be ignored
   classes <- classes[columns.keep]
   RNASeq <- RNASeq[, c(TRUE, columns.keep)]
-  #print(classes)
-  #str(RNASeq)
   
   runFgseaRnaseq(RNASeq, classes)
 }

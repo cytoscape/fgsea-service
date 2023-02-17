@@ -61,7 +61,7 @@ testRnaSeq1 <- function() {
 
 testRnaSeq2 <- function() {
   readExpFileAndRunFGSEA(
-    fileName = "GSE129943_rsem_counts_2016_fixed.txt", 
+    fileName = "GSE129943_rsem_counts_2016.txt", 
     colClasses = c("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"),
     colsToDrop = c("HGNC"),
     classes = c('A', 'A', 'A', 'B', 'B', 'B')
