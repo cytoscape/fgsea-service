@@ -25,20 +25,7 @@ as_matrix <- function(x) {
 }
 
 
-runFgseaPreranked <- function(ranks) {
-  fgseaRes <- fgsea(
-    pathways, 
-    ranks, 
-    minSize = fgsea.minSize, 
-    maxSize = fgsea.maxSize
-  )
-  
-  res <- fgseaRes[, ..result.cols]
-  list(pathways=res)
-}
-
-
-runFgseaRnaseq <- function(RNASeq, classes) {
+calculateRanks <- function(RNASeq, classes) {
   # Convert to matrix
   RNASeq <- as_matrix(RNASeq)
   
@@ -68,6 +55,12 @@ runFgseaRnaseq <- function(RNASeq, classes) {
   ranks <- data.frame(genenames, ranks)
   colnames(ranks) <- c("gene","rank")
   ranks <- setNames(ranks$rank, ranks$gene)
+  ranks
+}
+
+
+runFgseaRnaseq <- function(RNASeq, classes) {
+  ranks <- calculateRanks(RNASeq, classes)
   
   # Run FGSEA
   fgseaRes <- fgsea(
@@ -79,6 +72,19 @@ runFgseaRnaseq <- function(RNASeq, classes) {
   
   res <- fgseaRes[, ..result.cols]
   list(ranks=as.list(ranks), pathways=res)
+}
+
+
+runFgseaPreranked <- function(ranks) {
+  fgseaRes <- fgsea(
+    pathways, 
+    ranks, 
+    minSize = fgsea.minSize, 
+    maxSize = fgsea.maxSize
+  )
+  
+  res <- fgseaRes[, ..result.cols]
+  list(pathways=res)
 }
 
 

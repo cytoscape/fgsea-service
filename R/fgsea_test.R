@@ -16,6 +16,19 @@
 source('R/plumber_fgsea.R')
 
 
+readExpFile <- function(fileName, colClasses, colsToDrop=c()) {
+  RNASeq <- read.table(file = here("data", fileName),
+                       colClasses = colClasses, 
+                       header = TRUE, 
+                       sep = '\t')
+  RNASeq[, !(names(RNASeq) %in% colsToDrop)] 
+}
+
+readExpFileAndRunFGSEA <- function(fileName, colClasses, colsToDrop=c(), classes) {
+  RNASeq <- readExpFile(fileName, colClasses, colsToDrop)
+  runFgseaRnaseq(RNASeq, classes)
+}
+
 writeFgseaRes <- function(fgseaRes, fileName="enrichments_results.txt") {
   write.table(fgseaRes, 
               file=paste(here(), "/data/", fileName, sep=""),
@@ -37,18 +50,23 @@ testRanks1 <- function() {
 
 
 testRnaSeq1 <- function() {
-  exp.file <- here("data", "FakeExpression.txt")
-  
-  # Fails here if the table can't be read...
-  colClasses <- c("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric")
-  RNASeq <- read.table(exp.file, header=TRUE, colClasses = colClasses)
-  RNASeq <- RNASeq[ , !(tolower(names(RNASeq)) %in% c("description"))] # remove description column
-  
-  classes <- c('A', 'A', 'A', 'B', 'B', 'B')
-  
-  runFgseaRnaseq(RNASeq, classes)
+  readExpFileAndRunFGSEA(
+    fileName = "FakeExpression.txt", 
+    colClasses = c("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"),
+    colsToDrop = c("description"),
+    classes = c('A', 'A', 'A', 'B', 'B', 'B')
+  )
 }
 
+
+testRnaSeq2 <- function() {
+  readExpFileAndRunFGSEA(
+    fileName = "GSE129943_rsem_counts_2016_fixed.txt", 
+    colClasses = c("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"),
+    colsToDrop = c("HGNC"),
+    classes = c('A', 'A', 'A', 'B', 'B', 'B')
+  )
+}
 
 
 
