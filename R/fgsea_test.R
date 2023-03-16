@@ -48,6 +48,15 @@ testRanks1 <- function() {
   runFgseaPreranked(ranks)
 }
 
+testCalculateRanks1 <- function() {
+  RNASeq <- readExpFile(
+    fileName = "GSE129943_rsem_counts_2016.txt", 
+    colClasses = c("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"),
+    colsToDrop = c("HGNC")
+  )
+  classes <- c('A', 'A', 'A', 'B', 'B', 'B')
+  ranks <- calculateRanks(RNASeq, classes)  
+}
 
 testRnaSeq1 <- function() {
   readExpFileAndRunFGSEA(

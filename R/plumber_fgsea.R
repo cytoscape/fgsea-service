@@ -56,24 +56,43 @@ calculateRanks <- function(RNASeq, classes) {
   colnames(ranks) <- c("gene","rank")
   ranks <- setNames(ranks$rank, ranks$gene)
   
-  # remove non-finite entriesstr
-  ranks[is.finite(ranks)]
+  ranks
 }
 
 
 runFgseaRnaseq <- function(RNASeq, classes) {
   ranks <- calculateRanks(RNASeq, classes)
+  finiteRanks <- ranks[is.finite(ranks)]
   
   # Run FGSEA
   fgseaRes <- fgsea(
     pathways, 
-    ranks, 
+    finiteRanks, 
     minSize = fgsea.minSize, 
     maxSize = fgsea.maxSize
   )
   
-  res <- fgseaRes[, ..result.cols]
-  list(ranks=as.list(ranks), pathways=res)
+  # remove unwanted columns
+  fgseaRes <- fgseaRes[, ..result.cols]
+  
+  result <- list(
+    ranks = as.list(finiteRanks), 
+    pathways = fgseaRes, 
+    messages = list()
+  )
+  
+  # check if there were any non-finite ranks
+  diff <- length(ranks) - length(finiteRanks)
+  if(diff > 0) {
+    result$messages[[1]] <- list(
+      level = 'warning',
+      type = 'non_finite_ranks',
+      text = paste('there are', diff, 'non-finite ranks out of', length(ranks), 'total ranks'),
+      data = list(totalRanks = length(ranks), finiteRanks = length(finiteRanks))
+    )
+  }
+  
+  result
 }
 
 
@@ -85,8 +104,10 @@ runFgseaPreranked <- function(ranks) {
     maxSize = fgsea.maxSize
   )
   
-  res <- fgseaRes[, ..result.cols]
-  list(pathways=res)
+  # remove unwanted columns
+  fgseaRes <- fgseaRes[, ..result.cols]
+  
+  list(pathways=fgseaRes)
 }
 
 
