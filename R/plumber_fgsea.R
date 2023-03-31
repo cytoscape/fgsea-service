@@ -119,9 +119,10 @@ function(req) {
 }
 
 
-# curl --data-binary @brca_hd_tep_ranks_100.rnk -X POST "http://127.0.0.1:9404/preranked" -H "Content-Type: text/tab-separated-values"
+# curl --data-binary @brca_hd_tep_ranks_100.rnk -X POST "http://127.0.0.1:9404/v1/preranked" -H "Content-Type: text/tab-separated-values"
 #* @post /v1/preranked
 #* @parser tsv
+#* @parser csv
 #* @serializer unboxedJSON
 function(req) {
   ranks <- req$body
@@ -132,9 +133,10 @@ function(req) {
 }
 
 
-# curl --data-binary @FakeExpression.txt -X POST "http://127.0.0.1:3723/rnaseq?classes=A,A,A,B,B,B" -H "Content-Type: text/tab-separated-values"
+# curl --data-binary @FakeExpression.txt -X POST "http://127.0.0.1:3723/v1/rnaseq?classes=A,A,A,B,B,B" -H "Content-Type: text/tab-separated-values"
 #* @post /v1/rnaseq
 #* @parser tsv
+#* @parser csv
 #* @serializer unboxedJSON
 function(req, classes) {
   RNASeq <- req$body
