@@ -147,9 +147,6 @@ function(req, classes) {
   # Boolean vector indicating which columns to keep
   columns.keep <- classes %in% c('A','B')
   
-  # Drop description column
-  RNASeq <- RNASeq[ , !(tolower(names(RNASeq)) %in% c('description'))]
-  
   # Drop columns that are to be ignored
   classes <- classes[columns.keep]
   RNASeq <- RNASeq[, c(TRUE, columns.keep)]
