@@ -38,7 +38,7 @@ writeFgseaRes <- function(fgseaRes, fileName="enrichments_results.txt") {
 }
 
 
-testRanks1 <- function() {
+testPreranked1 <- function() {
   rnk.file <- here("data", "brca_hd_tep_ranks.rnk")
   
   ranks <- read.table(rnk.file, header=TRUE, colClasses = c("character", "numeric"))
@@ -48,14 +48,14 @@ testRanks1 <- function() {
   runFgseaPreranked(ranks)
 }
 
-testCalculateRanks1 <- function() {
+testCalculateRanks1 <- function(old=FALSE) {
   RNASeq <- readExpFile(
     fileName = "GSE129943_rsem_counts_2016.txt", 
     colClasses = c("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"),
     colsToDrop = c("HGNC")
   )
   classes <- c('A', 'A', 'A', 'B', 'B', 'B')
-  ranks <- calculateRanks(RNASeq, classes)  
+  calculateRanks(RNASeq, classes, old)  
 }
 
 testRnaSeq1 <- function() {

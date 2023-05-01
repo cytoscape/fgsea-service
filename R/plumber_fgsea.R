@@ -25,7 +25,7 @@ asMatrix <- function(x) {
 }
 
 
-calculateRanks <- function(RNASeq, classes) {
+calculateRanks <- function(RNASeq, classes, old=FALSE) {
   # Convert to matrix
   RNASeq <- asMatrix(RNASeq)
   
@@ -36,27 +36,52 @@ calculateRanks <- function(RNASeq, classes) {
   keep <- filterByExpr(d)
   d <- d[keep, , keep.lib.sizes=FALSE]
   
-  # Normalize the data
-  d <- calcNormFactors(d)
-  # Calculate dispersion
-  d <- estimateCommonDisp(d)
-  d <- estimateTagwiseDisp(d)
-  
-  # Calculate differential expression statistics with a simple design
-  de <- exactTest(d, pair=c("A", "B"))
-  tt_exact_test <- topTags(de, n=nrow(d))
-  tt <- tt_exact_test
-  
-  # Calculate ranks
-  ranks = sign(tt$table$logFC) * -log10(tt$table$PValue)
-  
-  # Put ranks into format for FGSEA
-  genenames <- rownames(tt$table)
-  ranks <- data.frame(genenames, ranks)
-  colnames(ranks) <- c("gene","rank")
-  ranks <- setNames(ranks$rank, ranks$gene)
-  
-  ranks
+  if(old) {
+    # Normalize the data
+    d <- calcNormFactors(d)
+    # Calculate dispersion
+    d <- estimateCommonDisp(d)
+    d <- estimateTagwiseDisp(d)
+    
+    # Calculate differential expression statistics with a simple design
+    de <- exactTest(d, pair=c("A", "B"))
+    tt_exact_test <- topTags(de, n=nrow(d))
+    tt <- tt_exact_test
+    
+    # Calculate ranks
+    ranks = sign(tt$table$logFC) * -log10(tt$table$PValue)
+    
+    # Put ranks into format for FGSEA
+    genenames <- rownames(tt$table)
+    ranks <- data.frame(genenames, ranks)
+    colnames(ranks) <- c("gene","rank")
+    ranks <- setNames(ranks$rank, ranks$gene)
+    
+    return(ranks)
+    
+  } else {
+    # Normalize the data
+    d <- calcNormFactors(d)
+    design <- model.matrix(~0 + classes)
+    d <- estimateDisp(d, design)
+    
+    # Calculate differential expression statistics with a simple design
+    my.contrasts <- makeContrasts(AvsB=classesA-classesB, levels=design)
+    fit <- glmQLFit(d, design)
+    qlf <- glmQLFTest(fit, coef=2, contrast=my.contrasts)
+    
+    table_res = topTags(qlf, n = nrow(d))
+    
+    ranks = sign(table_res$table$logFC) * -log10(table_res$table$PValue)
+    
+    # Put ranks into format for FGSEA
+    genenames <- rownames(table_res$table)
+    ranks <- data.frame(genenames, ranks)
+    colnames(ranks) <- c("gene","rank")
+    ranks <- setNames(ranks$rank, ranks$gene)
+    
+    return(ranks)
+  }
 }
 
 
