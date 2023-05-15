@@ -15,7 +15,7 @@ fgsea.minSize = 15
 fgsea.maxSize = 500
 
 # Columns from FGSEA results to return
-result.cols = c("pathway", "size", "pval", "padj", "ES", "NES")
+result.cols = c("pathway", "size", "pval", "padj", "NES")
 
 
 asMatrix <- function(x) {

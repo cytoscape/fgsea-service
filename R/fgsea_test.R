@@ -37,6 +37,14 @@ writeFgseaRes <- function(fgseaRes, fileName="enrichments_results.txt") {
               quote = FALSE)
 }
 
+writeRanks <- function(ranks, fileName="ranks.txt") {
+  df <- data.frame(gene=names(res$ranks), rank=unlist(res$ranks))
+  write.table(df, 
+              file=paste(here(), "/data/", fileName, sep=""),
+              sep = "\t",
+              row.names = FALSE,
+              quote = FALSE)
+}
 
 testPreranked1 <- function() {
   rnk.file <- here("data", "brca_hd_tep_ranks.rnk")
@@ -70,7 +78,7 @@ testRnaSeq1 <- function() {
 
 testRnaSeq2 <- function() {
   readExpFileAndRunFGSEA(
-    fileName = "GSE129943_rsem_counts_2016.txt", 
+    fileName = "GSE129943_rsem_counts_HGNC.txt", 
     colClasses = c("character", "character", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"),
     colsToDrop = c("HGNC"),
     classes = c('A', 'A', 'A', 'B', 'B', 'B')
