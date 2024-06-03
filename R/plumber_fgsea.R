@@ -7,7 +7,8 @@ library(edgeR)
 library(here)
 
 # Load pathway database into memory.
-gmt.file = here("data", "Human_GOBP_AllPathways_no_GO_iea_June_01_2022_symbol.gmt")
+#gmt.file = here("data", "Human_GOBP_AllPathways_no_GO_iea_June_01_2022_symbol.gmt")
+gmt.file = here("data", "Human_GOBP_AllPathways_noPFOCR_no_GO_iea_May_01_2024_symbol.gmt")
 pathways <- gmtPathways(gmt.file)
 
 # Ignore gene sets that are smaller or larger than the limits.
