@@ -7,8 +7,9 @@ library(edgeR)
 library(here)
 
 # Load pathway database into memory.
-#gmt.file = here("data", "Human_GOBP_AllPathways_no_GO_iea_June_01_2022_symbol.gmt")
-gmt.file = here("data", "Human_GOBP_AllPathways_noPFOCR_no_GO_iea_May_01_2024_symbol.gmt")
+
+gmt = "Human_GOBP_AllPathways_noPFOCR_no_GO_iea_May_01_2024_symbol.gmt";
+gmt.file = here("data", gmt)
 pathways <- gmtPathways(gmt.file)
 
 # Ignore gene sets that are smaller or larger than the limits.
@@ -80,7 +81,8 @@ runFgseaRnaseq <- function(RNASeq, classes) {
   result <- list(
     ranks = as.list(finiteRanks), 
     pathways = fgseaRes, 
-    messages = list()
+    messages = list(),
+    gmtFile=gmt
   )
   
   # check if there were any non-finite ranks
@@ -109,7 +111,7 @@ runFgseaPreranked <- function(ranks) {
   # remove unwanted columns
   fgseaRes <- fgseaRes[, ..result.cols]
   
-  list(pathways=fgseaRes)
+  list(pathways=fgseaRes, gmtFile=gmt)
 }
 
 
